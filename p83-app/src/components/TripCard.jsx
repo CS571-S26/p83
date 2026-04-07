@@ -1,15 +1,18 @@
+import Badge from 'react-bootstrap/Badge'
 import Card from 'react-bootstrap/Card'
 
 function TripCard({ title, region, difficulty, summary }) {
   return (
-    <Card className="h-100 shadow-sm">
+    <Card className="h-100 shadow-sm border-0">
+      <Card.Header className="bg-body-secondary border-0 py-3 d-flex justify-content-between align-items-start gap-2 flex-wrap">
+        <Card.Title className="h6 mb-0">{title}</Card.Title>
+        <Badge bg="primary" className="text-white text-uppercase" style={{ fontSize: '0.65rem' }}>
+          {difficulty}
+        </Badge>
+      </Card.Header>
       <Card.Body>
-        <Card.Title>{title}</Card.Title>
-        <Card.Subtitle className="mb-2 text-muted">{region}</Card.Subtitle>
-        <Card.Text className="small mb-2">
-          <strong>Difficulty:</strong> {difficulty}
-        </Card.Text>
-        <Card.Text>{summary}</Card.Text>
+        <Card.Subtitle className="mb-2 text-muted small">{region}</Card.Subtitle>
+        <Card.Text className="small mb-0">{summary}</Card.Text>
       </Card.Body>
     </Card>
   )

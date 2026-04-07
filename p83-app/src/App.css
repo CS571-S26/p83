@@ -1,10 +1,15 @@
 .bb-root {
   max-width: 960px;
   margin: 0 auto;
-  padding: 40px 20px 80px;
+  padding: 2rem 1rem 4rem;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 2.5rem;
+}
+
+.bb-eyebrow {
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
 }
 
 .bb-header {
@@ -12,7 +17,6 @@
 }
 
 .bb-title {
-  font-size: clamp(2.4rem, 4vw, 3rem);
   margin-bottom: 0.5rem;
 }
 
@@ -22,32 +26,22 @@
   color: var(--text-soft);
 }
 
-.bb-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
-  gap: 24px;
-  align-items: stretch;
-}
-
-.bb-hero-text h2 {
-  margin-bottom: 0.5rem;
-}
-
 .bb-hero-text p {
   color: var(--text-soft);
+  margin-bottom: 1rem;
 }
 
 .bb-hero-panel {
-  border-radius: 12px;
+  border-radius: 0.75rem;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.02);
-  padding: 18px 20px;
+  background: var(--social-bg);
+  padding: 1.125rem 1.25rem;
 }
 
 .bb-hero-label {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--accent);
   margin-bottom: 0.75rem;
 }
@@ -58,13 +52,22 @@
   color: var(--text-soft);
 }
 
+.bb-hero-img {
+  border-radius: 0.75rem;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  max-height: 280px;
+}
+
 .bb-intro {
   border-top: 1px solid var(--border);
-  padding-top: 24px;
+  padding-top: 1.5rem;
 }
 
 .bb-intro h3 {
   margin-bottom: 0.5rem;
+  font-size: 1.15rem;
 }
 
 .bb-intro p {
@@ -72,13 +75,15 @@
   color: var(--text-soft);
 }
 
+.bb-page-intro {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
 @media (max-width: 768px) {
   .bb-root {
-    padding-top: 24px;
-    padding-bottom: 48px;
-  }
-
-  .bb-hero {
-    grid-template-columns: minmax(0, 1fr);
+    padding-top: 1.25rem;
+    padding-bottom: 2.5rem;
   }
 }

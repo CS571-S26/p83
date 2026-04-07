@@ -6,30 +6,37 @@ const SAMPLE_TRIPS = [
     title: 'Mount Kilimanjaro',
     region: 'Tanzania, Africa',
     difficulty: 'Challenging',
-    summary: 'High-altitude trek to Uhuru Peak with varied climate zones and strong acclimatization focus.',
+    summary:
+      'I want this page to cover my Lemosho route, acclimatization days, and what I packed for summit night.',
   },
   {
     title: 'Poon Hill',
     region: 'Nepal, Asia',
     difficulty: 'Moderate',
-    summary: 'Classic Annapurna foothills trek with sunrise views and teahouse culture.',
+    summary:
+      'Teahouse trekking with a sunrise push—good for comparing monsoon vs. dry season windows.',
   },
   {
     title: 'Acatenango Volcano',
     region: 'Guatemala, Central America',
     difficulty: 'Challenging',
-    summary: 'Steep volcanic ascent with optional views of neighboring Fuego.',
+    summary:
+      'Steep volcanic ascent; I will add notes on pacing, cold layers, and camp logistics near Fuego.',
   },
 ]
 
 function TripsPage() {
   return (
-    <Container as="main" className="py-5">
-      <h1 className="mb-3">Featured trips</h1>
-      <p className="text-muted mb-4">
-        A sample of destinations from the proposal. Full detail pages and filters will come in later
-        milestones.
-      </p>
+    <Container as="main" className="bb-root py-4">
+      <header className="bb-page-intro">
+        <p className="bb-eyebrow text-uppercase text-muted mb-2">Destinations</p>
+        <h1 className="h2 mb-2">Featured trips</h1>
+        <p className="text-muted mb-0">
+          Three places from my proposal to anchor the trip pages. I will fill in galleries, stats, and
+          gear lists as I build each route.
+        </p>
+      </header>
+
       <Row className="g-4">
         {SAMPLE_TRIPS.map((trip) => (
           <Col key={trip.title} md={6} lg={4}>

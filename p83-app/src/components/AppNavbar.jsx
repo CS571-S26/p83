@@ -3,9 +3,14 @@ import { NavLink } from 'react-router-dom'
 
 function AppNavbar() {
   return (
-    <Navbar bg="dark" variant="dark" expand="md" className="bb-navbar">
+    <Navbar
+      expand="md"
+      sticky="top"
+      bg="body-tertiary"
+      className="border-bottom shadow-sm"
+    >
       <Container>
-        <Navbar.Brand as={NavLink} to="/" end>
+        <Navbar.Brand as={NavLink} to="/" end className="fw-semibold">
           Backpacking Basecamp
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="bb-main-nav" />
