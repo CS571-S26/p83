@@ -29,10 +29,10 @@ function TripsPage() {
   return (
     <Container as="main" className="bb-root py-4">
       <header className="bb-page-intro">
-        <p className="bb-eyebrow text-uppercase text-muted mb-2">Destinations</p>
-        <h1 className="h2 mb-2">Featured trips</h1>
-        <p className="text-muted mb-0">
-          Three places from my proposal to anchor the trip pages. I will fill in galleries, stats, and
+        <p className="bb-eyebrow text-uppercase mb-2">Destinations</p>
+        <h1 className="h2 mb-3">Featured trips</h1>
+        <p className="bb-lead-trips mb-0">
+          Three places from my proposal to anchor the trip pages. I will add galleries, stats, and
           gear lists as I build each route.
         </p>
       </header>
