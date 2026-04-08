@@ -1,73 +1,77 @@
 import { Link } from 'react-router-dom'
-import { Button, Col, Container, Image, Row } from 'react-bootstrap'
-import heroImg from '../assets/hero.png'
+import { FEATURED_SLUGS, HOME_CONTINENT_CARDS, TRIPS } from '../data/trips'
+import DestinationCard from '../components/DestinationCard'
+import HeroSlideshow from '../components/HeroSlideshow'
+import SectionReveal from '../components/SectionReveal'
 
-function HomePage() {
+const featuredTrips = FEATURED_SLUGS.map((slug) => TRIPS.find((t) => t.slug === slug)).filter(Boolean)
+
+export default function HomePage() {
   return (
-    <Container as="main" className="bb-root py-4">
-      <header className="bb-header">
-        <p className="bb-eyebrow text-uppercase mb-2">Field notes</p>
-        <h1 className="bb-title">Backpacking Basecamp</h1>
-        <p className="bb-lead">
-          Trip write-ups from six continents—summits, volcanoes, gorges, and high lakes—with
-          difficulty, elevation, and gear that actually worked.
-        </p>
-      </header>
+    <>
+      <HeroSlideshow />
 
-      <div className="bb-hero-section">
-        <Row className="align-items-center g-4 g-lg-5">
-          <Col lg={6}>
-            <div className="bb-hero-img-wrap">
-              <Image
-                src={heroImg}
-                alt="Mountain ridge and clouds at sunrise"
-                className="bb-hero-img"
-                fluid
-              />
-            </div>
-          </Col>
-          <Col lg={6}>
-            <div className="bb-hero-text text-start">
-              <h2>Plan your next summit</h2>
-              <p>
-                I am building a trip explorer so you can filter by continent, difficulty, and trail
-                type, then open trip reports for places like Kilimanjaro, Poon Hill, and Acatenango.
+      <section className="bb-continent-explore" aria-labelledby="home-regions-heading">
+        <div className="bb-shell">
+          <SectionReveal>
+            <header className="bb-home-intro">
+              <p className="bb-home-intro__eyebrow">Explore by region</p>
+              <span className="bb-home-intro__rule" aria-hidden="true" />
+              <h2 id="home-regions-heading" className="bb-home-intro__title">
+                Continents and corridors
+              </h2>
+              <p className="bb-home-intro__lead">
+                Jump to the trip grid with a region pre-selected. You can still refine difficulty and
+                route type on the next screen.
               </p>
-              <Button as={Link} to="/trips" variant="primary" size="lg" className="mb-3">
-                Browse trips
-              </Button>
-              <p className="bb-fine-print mb-0">
-                Destination pages will include elevation gain, best season, and gear notes—not just
-                photos.
-              </p>
-            </div>
-          </Col>
-        </Row>
-      </div>
+            </header>
+          </SectionReveal>
+          <div className="bb-continent-grid">
+            {HOME_CONTINENT_CARDS.map((c) => (
+              <Link
+                key={c.pillRegion}
+                to={`/trips?pill=${encodeURIComponent(c.pillRegion)}`}
+                className="bb-continent-card"
+              >
+                <div
+                  className="bb-continent-card__bg"
+                  style={{ backgroundImage: `url("${c.imageUrl}")` }}
+                />
+                <div className="bb-continent-card__shade" aria-hidden="true" />
+                <div className="bb-continent-card__content">
+                  <span className="bb-continent-card__title">{c.title}</span>
+                  <span className="bb-continent-card__count">
+                    {c.count} destination{c.count === 1 ? '' : 's'}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      <Row className="g-4 align-items-stretch">
-        <Col lg={7}>
-          <section className="bb-hero-panel text-start h-100">
-            <p className="bb-hero-label">Planned features</p>
-            <ul>
-              <li>Filterable trip explorer (continent, difficulty, trip type)</li>
-              <li>Wishlist of treks I still want to finish</li>
-              <li>Short trail notes and reviews per destination</li>
-            </ul>
-          </section>
-        </Col>
-        <Col lg={5}>
-          <section className="bb-roadmap text-start h-100 d-flex flex-column justify-content-center">
-            <h3>On the roadmap</h3>
-            <p className="mb-0">
-              Next I will wire up destination data from my proposal, then add the wishlist and
-              comment form so the site works as a planning tool for other hikers.
+      <hr className="bb-rule bb-rule--inset" />
+
+      <section className="bb-section bb-shell" aria-labelledby="home-featured-heading">
+        <SectionReveal>
+          <header className="bb-home-intro">
+            <p className="bb-home-intro__eyebrow">Featured</p>
+            <span className="bb-home-intro__rule" aria-hidden="true" />
+            <h2 id="home-featured-heading" className="bb-home-intro__title">
+              Three dispatches
+            </h2>
+            <p className="bb-home-intro__lead">
+              Kilimanjaro by the Lemosho line, Acatenango above the ash line, and Ala Kul in the Kyrgyz
+              high country.
             </p>
-          </section>
-        </Col>
-      </Row>
-    </Container>
+          </header>
+        </SectionReveal>
+        <div className="bb-dest-grid bb-dest-grid--featured">
+          {featuredTrips.map((trip, index) => (
+            <DestinationCard key={trip.slug} trip={trip} index={index} />
+          ))}
+        </div>
+      </section>
+    </>
   )
 }
-
-export default HomePage

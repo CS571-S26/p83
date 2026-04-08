@@ -1,73 +1,52 @@
-/* Light editorial theme — do not tie :root colors to prefers-color-scheme while using data-bs-theme="light",
-   or body text becomes washed out on white (Bootstrap stays light). */
-
 :root {
-  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
-  --font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --color-bg: #f2ede4;
+  --color-bg-card: #ede8df;
+  --color-ink: #1c1917;
+  --color-ink-muted: #6b6459;
+  --color-ridge: #2c3b2d;
+  --color-ember: #c4521a;
+  --color-stone: #8c7b6b;
+  --color-badge-easy: #4a7c59;
+  --color-badge-moderate: #8b6914;
+  --color-badge-hard: #8b3a2a;
 
-  --page-bg: #ebe6dc;
-  --surface: #ffffff;
-  --surface-elevated: #f7f5f0;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Jost', system-ui, sans-serif;
 
-  --text: #2a332e;
-  --text-soft: #4a5650;
-  --text-h: #14221a;
-  --border: #d4cfc3;
-  --border-strong: #b8b0a2;
+  --shadow-card: 0 12px 32px rgba(28, 25, 23, 0.08);
+  --shadow-lift: 0 20px 40px rgba(28, 25, 23, 0.12);
 
-  --accent: #1b4332;
-  --accent-mid: #2d6a4f;
-  --accent-light: #40916c;
-  --accent-bg: rgba(27, 67, 50, 0.08);
-  --accent-ring: rgba(45, 106, 79, 0.35);
-
-  --code-bg: #ede9e1;
-  --shadow-sm: 0 1px 2px rgba(20, 34, 26, 0.06);
-  --shadow-md: 0 8px 24px rgba(20, 34, 26, 0.08);
-  --shadow-lg: 0 16px 40px rgba(20, 34, 26, 0.1);
-
-  font: 17px/1.55 var(--font-body);
-  letter-spacing: 0.01em;
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--color-ink);
+  background-color: var(--color-bg);
   color-scheme: only light;
-  color: var(--text);
-  background: var(--page-bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
 }
 
 html[data-bs-theme='light'] {
   --bs-body-font-family: var(--font-body);
-  --bs-body-color: var(--text);
-  --bs-body-bg: var(--page-bg);
-  --bs-primary: #2d6a4f;
-  --bs-primary-rgb: 45, 106, 79;
-  --bs-link-color: #1b4332;
-  --bs-link-hover-color: #0f2e22;
-  --bs-secondary-color: var(--text-soft);
-  --bs-emphasis-color: var(--text-h);
-  --bs-border-color: var(--border);
+  --bs-body-color: var(--color-ink);
+  --bs-body-bg: var(--color-bg);
+  --bs-primary: var(--color-ridge);
+  --bs-link-color: var(--color-ridge);
+  --bs-link-hover-color: #1a221b;
+  --bs-border-color: color-mix(in srgb, var(--color-stone) 40%, transparent);
 }
 
 body {
   margin: 0;
-  background: var(--page-bg);
-  color: var(--text);
+  background: var(--color-bg);
+  color: var(--color-ink);
 }
 
 #root {
   min-height: 100svh;
   display: flex;
   flex-direction: column;
-  max-width: 100%;
-  margin: 0;
-  text-align: start;
-  box-sizing: border-box;
 }
 
 h1,
@@ -75,31 +54,18 @@ h2,
 h3 {
   font-family: var(--font-display);
   font-weight: 600;
-  color: var(--text-h);
-  letter-spacing: -0.02em;
-}
-
-h1 {
-  font-size: clamp(2.1rem, 4.5vw, 2.85rem);
-  line-height: 1.15;
-  margin: 0 0 0.75rem;
-}
-
-h2 {
-  font-size: 1.35rem;
-  line-height: 1.25;
-  margin: 0 0 0.5rem;
+  color: var(--color-ridge);
+  margin: 0;
 }
 
 p {
   margin: 0;
 }
 
-code {
-  font-family: ui-monospace, Consolas, monospace;
-  font-size: 0.9em;
-  padding: 0.15em 0.4em;
-  border-radius: 4px;
-  background: var(--code-bg);
-  color: var(--text-h);
+a {
+  color: var(--color-ridge);
+}
+
+a:hover {
+  color: var(--color-ember);
 }
