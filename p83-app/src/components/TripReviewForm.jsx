@@ -38,16 +38,10 @@ export default function TripReviewForm({ trailName, onSubmitReview }) {
     e.preventDefault()
     if (!visitorName.trim() || rating < 1 || !comment.trim()) return
     onSubmitReview({
-      id:
-        typeof crypto !== 'undefined' && crypto.randomUUID
-          ? crypto.randomUUID()
-          : `r-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      trailName,
       visitorName: visitorName.trim(),
       rating,
       season: season === SEASONS[0] ? 'Not specified' : season,
-      comment: comment.trim(),
-      at: new Date().toISOString(),
+      body: comment.trim(),
     })
     setVisitorName('')
     setRating(0)

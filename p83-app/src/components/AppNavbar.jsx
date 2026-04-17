@@ -35,6 +35,9 @@ function NavbarInner({ heroNav }) {
             <Nav.Link as={NavLink} to="/trips" className="bb-nav-link nav-link">
               Trips
             </Nav.Link>
+            <Nav.Link as={NavLink} to="/forums" className="bb-nav-link nav-link">
+              Forums
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

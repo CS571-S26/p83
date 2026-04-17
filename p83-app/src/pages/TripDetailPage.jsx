@@ -1,21 +1,18 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { getTripBySlug } from '../data/trips'
-import TripReviewForm from '../components/TripReviewForm'
+import TripReviewThread from '../components/TripReviewThread'
 import DetailStats from '../components/DetailStats'
 import SectionReveal from '../components/SectionReveal'
+import { useTripReviews } from '../hooks/useTripReviews'
 
 export default function TripDetailPage() {
   const { slug } = useParams()
   const trip = useMemo(() => getTripBySlug(slug), [slug])
-  const [reviews, setReviews] = useState([])
+  const { flat, visitorId, addTopLevel, addReply, deleteIfOwner } = useTripReviews(slug || '')
 
   if (!trip) {
     return <Navigate to="/trips" replace />
-  }
-
-  function addReview(r) {
-    setReviews((prev) => [r, ...prev])
   }
 
   return (
@@ -66,25 +63,14 @@ export default function TripDetailPage() {
 
         <hr className="bb-rule" />
 
-        <TripReviewForm trailName={trip.name} onSubmitReview={addReview} />
-
-        {reviews.length > 0 && (
-          <div className="bb-reviews">
-            <h3 className="bb-reviews__title">Recent reviews</h3>
-            <ul className="bb-reviews__list">
-              {reviews.map((r) => (
-                <li key={r.id} className="bb-review-card">
-                  <div className="bb-review-card__meta">
-                    <strong>{r.visitorName}</strong>
-                    <span className="bb-review-card__stars">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
-                    <span className="bb-review-card__season">{r.season}</span>
-                  </div>
-                  <p className="bb-review-card__text">{r.comment}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <TripReviewThread
+          tripName={trip.name}
+          visitorId={visitorId}
+          addTopLevel={addTopLevel}
+          addReply={addReply}
+          deleteIfOwner={deleteIfOwner}
+          flat={flat}
+        />
 
         <p className="bb-detail-back">
           <Link to="/trips">← All destinations</Link>

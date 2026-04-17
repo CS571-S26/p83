@@ -6,6 +6,7 @@ import SiteFooter from './components/SiteFooter'
 import HomePage from './pages/HomePage'
 import TripsPage from './pages/TripsPage'
 import TripDetailPage from './pages/TripDetailPage'
+import ForumsPage from './pages/ForumsPage'
 import './App.css'
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/trips" element={<TripsPage />} />
+              <Route path="/forums" element={<ForumsPage />} />
               <Route path="/trips/:slug" element={<TripDetailPage />} />
             </Routes>
           </div>
