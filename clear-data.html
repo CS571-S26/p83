@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Data - Backpacking Basecamp</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .success {
+            display: none;
+            color: #22c55e;
+            font-weight: 600;
+            margin-top: 1rem;
+            font-size: 1.2rem;
+        }
+        .success.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Reset Forum Data</h1>
+        <p>Click the button below to clear all existing forum data and reload with fresh seed data. This will populate all destinations with realistic reviews and comments.</p>
+        <button onclick="clearData()">Clear & Reload</button>
+        <div class="success" id="success">✅ Data cleared! Redirecting...</div>
+    </div>
+
+    <script>
+        function clearData() {
+            localStorage.removeItem('bb-basecamp-reviews');
+            localStorage.removeItem('bb-basecamp-votes');
+
+            document.getElementById('success').classList.add('show');
+
+            setTimeout(() => {
+                window.location.href = '/p83/forums';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
