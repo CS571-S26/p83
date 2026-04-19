@@ -61,6 +61,22 @@ export function deleteCommentCascade(slug, id) {
   saveThread(slug, next)
 }
 
+export function editComment(slug, id, newBody) {
+  const flat = getThread(slug)
+  const next = flat.map((item) => {
+    if (item.id === id) {
+      return {
+        ...item,
+        body: newBody,
+        edited: true,
+        editedAt: new Date().toISOString(),
+      }
+    }
+    return item
+  })
+  saveThread(slug, next)
+}
+
 export function getThreadStats(slug) {
   const flat = getThread(slug)
   if (flat.length === 0) return { count: 0, lastAt: null }

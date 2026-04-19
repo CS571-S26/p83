@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { WishlistProvider } from './context/WishlistContext'
 import AppNavbar from './components/AppNavbar'
@@ -7,9 +8,14 @@ import HomePage from './pages/HomePage'
 import TripsPage from './pages/TripsPage'
 import TripDetailPage from './pages/TripDetailPage'
 import ForumsPage from './pages/ForumsPage'
+import { applySeedData } from './data/seedData'
 import './App.css'
 
 function App() {
+  useEffect(() => {
+    applySeedData()
+  }, [])
+
   return (
     <BrowserRouter basename="/p83">
       <WishlistProvider>

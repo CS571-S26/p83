@@ -42,6 +42,7 @@ export default function TripsPage() {
   const [continent, setContinent] = useState('all')
   const [difficulty, setDifficulty] = useState('all')
   const [tripType, setTripType] = useState('all')
+  const [searchTerm, setSearchTerm] = useState('')
   const [openMenu, setOpenMenu] = useState(null)
 
   const wrapRef = useRef(null)
@@ -57,19 +58,29 @@ export default function TripsPage() {
     setContinent(id)
   }
 
-  const filtered = useMemo(
-    () =>
-      filterTrips(TRIPS, {
-        continent,
-        difficulty,
-        tripType,
-        pillRegion: pill || 'all',
-      }),
-    [continent, difficulty, tripType, pill],
-  )
+  const filtered = useMemo(() => {
+    let results = filterTrips(TRIPS, {
+      continent,
+      difficulty,
+      tripType,
+      pillRegion: pill || 'all',
+    })
+
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase()
+      results = results.filter(
+        (trip) =>
+          trip.name.toLowerCase().includes(term) ||
+          trip.regionLabel.toLowerCase().includes(term) ||
+          trip.report.some((para) => para.toLowerCase().includes(term)),
+      )
+    }
+
+    return results
+  }, [continent, difficulty, tripType, pill, searchTerm])
 
   const continentActive = pill ? 'all' : continent
-  const filterKey = `${pill}|${continent}|${difficulty}|${tripType}`
+  const filterKey = `${pill}|${continent}|${difficulty}|${tripType}|${searchTerm}`
 
   const continentBtnLabel = useMemo(
     () => continentDisplayLabel(pill, continent),
@@ -79,12 +90,13 @@ export default function TripsPage() {
   const typeBtnLabel = TYPE_FILTERS.find((f) => f.id === tripType)?.label ?? 'All'
 
   const hasActiveFilters =
-    Boolean(pill) || continent !== 'all' || difficulty !== 'all' || tripType !== 'all'
+    Boolean(pill) || continent !== 'all' || difficulty !== 'all' || tripType !== 'all' || searchTerm !== ''
 
   const clearAll = () => {
     setContinent('all')
     setDifficulty('all')
     setTripType('all')
+    setSearchTerm('')
     clearPill()
     setOpenMenu(null)
   }
@@ -129,6 +141,27 @@ export default function TripsPage() {
       </div>
 
       <div className="bb-shell">
+        <div className="bb-trip-search-wrap">
+          <input
+            type="search"
+            className="bb-input bb-trip-search"
+            placeholder="Search trips by name, region, or description..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            aria-label="Search trips"
+          />
+          {searchTerm && (
+            <button
+              type="button"
+              className="bb-trip-search__clear"
+              onClick={() => setSearchTerm('')}
+              aria-label="Clear search"
+            >
+              ×
+            </button>
+          )}
+        </div>
+
         <div className="bb-trip-filters-wrap" ref={wrapRef}>
           <div className="bb-trip-filters">
             <div className="bb-trip-filters__bar">

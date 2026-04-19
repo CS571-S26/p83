@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   deleteCommentCascade,
+  editComment,
   getThread,
   saveThread,
 } from '../lib/reviewsStorage'
@@ -76,11 +77,23 @@ export function useTripReviews(slug) {
     [slug, visitorId],
   )
 
+  const editIfOwner = useCallback(
+    (id, newBody) => {
+      const thread = getThread(slug)
+      const target = thread.find((x) => x.id === id)
+      if (!target || target.authorId !== visitorId) return
+      editComment(slug, id, newBody)
+      setFlat(getThread(slug))
+    },
+    [slug, visitorId],
+  )
+
   return {
     flat,
     visitorId,
     addTopLevel,
     addReply,
     deleteIfOwner,
+    editIfOwner,
   }
 }

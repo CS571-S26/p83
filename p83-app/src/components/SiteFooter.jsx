@@ -12,6 +12,7 @@ function SiteFooter() {
           <nav className="bb-site-footer__nav" aria-label="Footer">
             <Link to="/">Home</Link>
             <Link to="/trips">Trips</Link>
+            <Link to="/forums">Forums</Link>
           </nav>
           <p className="bb-site-footer__credit">Built for CS571 · UW–Madison</p>
         </div>

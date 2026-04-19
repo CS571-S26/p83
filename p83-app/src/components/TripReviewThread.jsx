@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import TripReviewForm from './TripReviewForm'
+import { addVote, removeVote, hasVoted, getVoteCount } from '../lib/votesStorage'
 
 function buildNested(flat) {
   const byParent = new Map()
@@ -77,11 +78,41 @@ function ReplyForm({ parentId, onSubmit, onCancel }) {
   )
 }
 
-function ThreadPost({ wrap, visitorId, onReply, onDelete, depth }) {
+function ThreadPost({ wrap, visitorId, onReply, onDelete, onEdit, depth }) {
   const { node, children } = wrap
   const [replyOpen, setReplyOpen] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editText, setEditText] = useState(node.body)
+  const [voteCount, setVoteCount] = useState(getVoteCount(node.id))
+  const [hasUserVoted, setHasUserVoted] = useState(hasVoted(node.id, visitorId))
   const isOwner = node.authorId === visitorId
   const isTop = node.parentId === null
+
+  const handleVote = () => {
+    if (hasUserVoted) {
+      if (removeVote(node.id, visitorId)) {
+        setVoteCount((prev) => Math.max(0, prev - 1))
+        setHasUserVoted(false)
+      }
+    } else {
+      if (addVote(node.id, visitorId)) {
+        setVoteCount((prev) => prev + 1)
+        setHasUserVoted(true)
+      }
+    }
+  }
+
+  const handleSaveEdit = () => {
+    if (editText.trim() && editText !== node.body) {
+      onEdit(node.id, editText.trim())
+    }
+    setIsEditing(false)
+  }
+
+  const handleCancelEdit = () => {
+    setEditText(node.body)
+    setIsEditing(false)
+  }
 
   return (
     <li className="bb-thread__item">
@@ -101,25 +132,68 @@ function ThreadPost({ wrap, visitorId, onReply, onDelete, depth }) {
             <span className="bb-review-card__season">{node.season}</span>
           ) : null}
         </div>
-        <p className="bb-thread-card__body">{node.body}</p>
-        <div className="bb-thread-card__actions">
-          <button
-            type="button"
-            className="bb-thread-card__reply-btn"
-            onClick={() => setReplyOpen((o) => !o)}
-          >
-            {replyOpen ? 'Close' : 'Reply'}
-          </button>
-          {isOwner ? (
-            <button
-              type="button"
-              className="bb-thread-card__delete"
-              onClick={() => onDelete(node.id)}
-            >
-              Delete
-            </button>
-          ) : null}
-        </div>
+        {isEditing ? (
+          <div className="bb-thread-card__edit">
+            <textarea
+              className="bb-input bb-textarea"
+              value={editText}
+              onChange={(e) => setEditText(e.target.value)}
+              rows={4}
+              autoFocus
+            />
+            <div className="bb-thread-card__edit-actions">
+              <button type="button" className="bb-btn bb-btn--primary bb-btn--sm" onClick={handleSaveEdit}>
+                Save
+              </button>
+              <button type="button" className="bb-thread-card__cancel" onClick={handleCancelEdit}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <p className="bb-thread-card__body">
+              {node.body}
+              {node.edited && <em className="bb-thread-card__edited"> (edited)</em>}
+            </p>
+            <div className="bb-thread-card__actions">
+              <button
+                type="button"
+                className={`bb-thread-card__vote ${hasUserVoted ? 'bb-thread-card__vote--voted' : ''}`}
+                onClick={handleVote}
+                title={hasUserVoted ? 'Remove vote' : 'Mark as helpful'}
+              >
+                👍 {hasUserVoted ? 'Helpful' : 'Helpful'}
+                {voteCount > 0 ? ` (${voteCount})` : ''}
+              </button>
+              <button
+                type="button"
+                className="bb-thread-card__reply-btn"
+                onClick={() => setReplyOpen((o) => !o)}
+              >
+                {replyOpen ? 'Close' : 'Reply'}
+              </button>
+              {isOwner ? (
+                <>
+                  <button
+                    type="button"
+                    className="bb-thread-card__edit-btn"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    className="bb-thread-card__delete"
+                    onClick={() => onDelete(node.id)}
+                  >
+                    Delete
+                  </button>
+                </>
+              ) : null}
+            </div>
+          </>
+        )}
         {replyOpen ? (
           <ReplyForm
             parentId={node.id}
@@ -140,6 +214,7 @@ function ThreadPost({ wrap, visitorId, onReply, onDelete, depth }) {
               visitorId={visitorId}
               onReply={onReply}
               onDelete={onDelete}
+              onEdit={onEdit}
               depth={depth + 1}
             />
           ))}
@@ -149,7 +224,15 @@ function ThreadPost({ wrap, visitorId, onReply, onDelete, depth }) {
   )
 }
 
-export default function TripReviewThread({ tripName, visitorId, addTopLevel, addReply, deleteIfOwner, flat }) {
+export default function TripReviewThread({
+  tripName,
+  visitorId,
+  addTopLevel,
+  addReply,
+  deleteIfOwner,
+  editIfOwner,
+  flat,
+}) {
   const tree = useMemo(() => buildNested(flat), [flat])
 
   return (
@@ -170,6 +253,7 @@ export default function TripReviewThread({ tripName, visitorId, addTopLevel, add
                 visitorId={visitorId}
                 onReply={addReply}
                 onDelete={deleteIfOwner}
+                onEdit={editIfOwner}
                 depth={0}
               />
             ))}

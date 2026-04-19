@@ -9,7 +9,9 @@ import { useTripReviews } from '../hooks/useTripReviews'
 export default function TripDetailPage() {
   const { slug } = useParams()
   const trip = useMemo(() => getTripBySlug(slug), [slug])
-  const { flat, visitorId, addTopLevel, addReply, deleteIfOwner } = useTripReviews(slug || '')
+  const { flat, visitorId, addTopLevel, addReply, deleteIfOwner, editIfOwner } = useTripReviews(
+    slug || '',
+  )
 
   if (!trip) {
     return <Navigate to="/trips" replace />
@@ -69,6 +71,7 @@ export default function TripDetailPage() {
           addTopLevel={addTopLevel}
           addReply={addReply}
           deleteIfOwner={deleteIfOwner}
+          editIfOwner={editIfOwner}
           flat={flat}
         />
 
