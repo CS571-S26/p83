@@ -3,6 +3,7 @@ import {
   deleteCommentCascade,
   editComment,
   getThread,
+  restoreComments,
   saveThread,
 } from '../lib/reviewsStorage'
 import { getOrCreateVisitorId } from '../lib/visitorId'
@@ -70,11 +71,20 @@ export function useTripReviews(slug) {
     (id) => {
       const thread = getThread(slug)
       const target = thread.find((x) => x.id === id)
-      if (!target || target.authorId !== visitorId) return
-      deleteCommentCascade(slug, id)
+      if (!target || target.authorId !== visitorId) return null
+      const deleted = deleteCommentCascade(slug, id)
       setFlat(getThread(slug))
+      return deleted
     },
     [slug, visitorId],
+  )
+
+  const undoDelete = useCallback(
+    (deletedComments) => {
+      restoreComments(slug, deletedComments)
+      setFlat(getThread(slug))
+    },
+    [slug],
   )
 
   const editIfOwner = useCallback(
@@ -95,5 +105,6 @@ export function useTripReviews(slug) {
     addReply,
     deleteIfOwner,
     editIfOwner,
+    undoDelete,
   }
 }

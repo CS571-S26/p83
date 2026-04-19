@@ -57,8 +57,16 @@ function collectDescendantIds(flat, rootId) {
 export function deleteCommentCascade(slug, id) {
   const flat = getThread(slug)
   const toRemove = collectDescendantIds(flat, id)
+  const deleted = flat.filter((item) => toRemove.has(item.id))
   const next = flat.filter((item) => !toRemove.has(item.id))
   saveThread(slug, next)
+  return deleted
+}
+
+export function restoreComments(slug, comments) {
+  const current = getThread(slug)
+  const restored = [...current, ...comments]
+  saveThread(slug, restored)
 }
 
 export function editComment(slug, id, newBody) {

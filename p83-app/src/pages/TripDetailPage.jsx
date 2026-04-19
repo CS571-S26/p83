@@ -4,14 +4,16 @@ import { getTripBySlug } from '../data/trips'
 import TripReviewThread from '../components/TripReviewThread'
 import DetailStats from '../components/DetailStats'
 import SectionReveal from '../components/SectionReveal'
+import ToastContainer from '../components/ToastContainer'
 import { useTripReviews } from '../hooks/useTripReviews'
+import { useToast } from '../hooks/useToast'
 
 export default function TripDetailPage() {
   const { slug } = useParams()
   const trip = useMemo(() => getTripBySlug(slug), [slug])
-  const { flat, visitorId, addTopLevel, addReply, deleteIfOwner, editIfOwner } = useTripReviews(
-    slug || '',
-  )
+  const { flat, visitorId, addTopLevel, addReply, deleteIfOwner, editIfOwner, undoDelete } =
+    useTripReviews(slug || '')
+  const { toasts, showToast, dismissToast } = useToast()
 
   if (!trip) {
     return <Navigate to="/trips" replace />
@@ -72,8 +74,12 @@ export default function TripDetailPage() {
           addReply={addReply}
           deleteIfOwner={deleteIfOwner}
           editIfOwner={editIfOwner}
+          undoDelete={undoDelete}
+          showToast={showToast}
           flat={flat}
         />
+
+        <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
         <p className="bb-detail-back">
           <Link to="/trips">← All destinations</Link>

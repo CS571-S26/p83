@@ -2457,3 +2457,238 @@ body.bb-wishlist-open {
   font-size: 0.875rem;
 }
 
+/* --- Toast Notifications --- */
+.bb-toast-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 400px;
+}
+
+.bb-toast {
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  animation: bb-toast-slide-in 0.3s ease-out;
+}
+
+@keyframes bb-toast-slide-in {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.bb-toast--info {
+  border-left: 4px solid #3b82f6;
+}
+
+.bb-toast--success {
+  border-left: 4px solid #059669;
+}
+
+.bb-toast--error {
+  border-left: 4px solid #dc2626;
+}
+
+.bb-toast--warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.bb-toast__message {
+  flex: 1;
+  font-size: 0.9375rem;
+  color: var(--color-ink);
+  line-height: 1.4;
+}
+
+.bb-toast__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.bb-toast__action {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.bb-toast__action:hover {
+  background: var(--color-bg-subtle);
+}
+
+.bb-toast__dismiss {
+  background: none;
+  border: none;
+  color: var(--color-ink-muted);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bb-toast__dismiss:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-ink);
+}
+
+@media (max-width: 640px) {
+  .bb-toast-container {
+    bottom: 1rem;
+    right: 1rem;
+    left: 1rem;
+    max-width: none;
+  }
+}
+
+/* --- Modal Dialog --- */
+.bb-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: bb-modal-fade-in 0.2s ease-out;
+}
+
+@keyframes bb-modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.bb-modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 500px;
+  width: 100%;
+  animation: bb-modal-scale-in 0.2s ease-out;
+}
+
+@keyframes bb-modal-scale-in {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.bb-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.bb-modal__title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-ridge);
+  margin: 0;
+}
+
+.bb-modal__close {
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  line-height: 1;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bb-modal__close:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-ink);
+}
+
+.bb-modal__body {
+  padding: 1.5rem;
+  color: var(--color-ink);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.bb-modal__body p {
+  margin: 0;
+}
+
+.bb-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.bb-btn--danger {
+  background: #dc2626;
+  color: white;
+  border: 1px solid #dc2626;
+}
+
+.bb-btn--danger:hover {
+  background: #b91c1c;
+  border-color: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.bb-btn--secondary {
+  background: white;
+  color: var(--color-ink);
+  border: 1px solid var(--color-border);
+}
+
+.bb-btn--secondary:hover {
+  background: var(--color-bg-subtle);
+  border-color: var(--color-ink-muted);
+}
+

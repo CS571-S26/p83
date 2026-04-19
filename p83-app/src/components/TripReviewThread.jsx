@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import TripReviewForm from './TripReviewForm'
+import ConfirmModal from './ConfirmModal'
 import { addVote, removeVote, hasVoted, getVoteCount } from '../lib/votesStorage'
 
 function buildNested(flat) {
@@ -78,13 +79,14 @@ function ReplyForm({ parentId, onSubmit, onCancel }) {
   )
 }
 
-function ThreadPost({ wrap, visitorId, onReply, onDelete, onEdit, depth }) {
+function ThreadPost({ wrap, visitorId, onReply, onDelete, onEdit, showToast, depth }) {
   const { node, children } = wrap
   const [replyOpen, setReplyOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [editText, setEditText] = useState(node.body)
   const [voteCount, setVoteCount] = useState(getVoteCount(node.id))
   const [hasUserVoted, setHasUserVoted] = useState(hasVoted(node.id, visitorId))
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const isOwner = node.authorId === visitorId
   const isTop = node.parentId === null
 
@@ -105,6 +107,7 @@ function ThreadPost({ wrap, visitorId, onReply, onDelete, onEdit, depth }) {
   const handleSaveEdit = () => {
     if (editText.trim() && editText !== node.body) {
       onEdit(node.id, editText.trim())
+      showToast('Your comment has been updated', { type: 'success' })
     }
     setIsEditing(false)
   }
@@ -112,6 +115,16 @@ function ThreadPost({ wrap, visitorId, onReply, onDelete, onEdit, depth }) {
   const handleCancelEdit = () => {
     setEditText(node.body)
     setIsEditing(false)
+  }
+
+  const handleConfirmDelete = () => {
+    const deleted = onDelete(node.id)
+    if (deleted) {
+      const count = deleted.length
+      const message = count === 1 ? 'Comment deleted' : `Comment and ${count - 1} ${count === 2 ? 'reply' : 'replies'} deleted`
+      showToast(message, deleted, isTop ? 'review' : 'reply')
+    }
+    setShowDeleteConfirm(false)
   }
 
   return (
@@ -185,7 +198,7 @@ function ThreadPost({ wrap, visitorId, onReply, onDelete, onEdit, depth }) {
                   <button
                     type="button"
                     className="bb-thread-card__delete"
-                    onClick={() => onDelete(node.id)}
+                    onClick={() => setShowDeleteConfirm(true)}
                   >
                     Delete
                   </button>
@@ -205,6 +218,21 @@ function ThreadPost({ wrap, visitorId, onReply, onDelete, onEdit, depth }) {
           />
         ) : null}
       </div>
+
+      <ConfirmModal
+        isOpen={showDeleteConfirm}
+        title="Delete comment"
+        message={
+          isTop
+            ? 'Are you sure you want to delete this review? This action cannot be undone.'
+            : children.length > 0
+            ? `This will delete this comment and ${children.length} ${children.length === 1 ? 'reply' : 'replies'}. Continue?`
+            : 'Are you sure you want to delete this comment?'
+        }
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
+
       {children.length > 0 ? (
         <ul className="bb-thread__children">
           {children.map((c) => (
@@ -231,16 +259,50 @@ export default function TripReviewThread({
   addReply,
   deleteIfOwner,
   editIfOwner,
+  undoDelete,
+  showToast,
   flat,
 }) {
   const tree = useMemo(() => buildNested(flat), [flat])
 
+  const handleAddReview = (payload) => {
+    addTopLevel(payload)
+    showToast('Review posted successfully!', { type: 'success', duration: 3000 })
+  }
+
+  const handleAddReply = (payload) => {
+    addReply(payload)
+    showToast('Reply posted!', { type: 'success', duration: 2000 })
+  }
+
+  const handleDelete = (id) => {
+    const deleted = deleteIfOwner(id)
+    if (!deleted) return null
+
+    const count = deleted.length
+    const message =
+      count === 1
+        ? 'Comment deleted'
+        : `Comment and ${count - 1} ${count === 2 ? 'reply' : 'replies'} deleted`
+
+    showToast(message, {
+      type: 'info',
+      duration: 5000,
+      action: {
+        label: 'Undo',
+        onClick: () => {
+          undoDelete(deleted)
+          showToast('Comment restored', { type: 'success', duration: 2000 })
+        },
+      },
+    })
+
+    return deleted
+  }
+
   return (
     <section id="reviews" className="bb-thread-section" aria-label="Trail comments and reviews">
-      <TripReviewForm
-        trailName={tripName}
-        onSubmitReview={(payload) => addTopLevel(payload)}
-      />
+      <TripReviewForm trailName={tripName} onSubmitReview={handleAddReview} />
 
       {tree.length > 0 ? (
         <div className="bb-reviews bb-reviews--thread">
@@ -251,9 +313,10 @@ export default function TripReviewThread({
                 key={w.node.id}
                 wrap={w}
                 visitorId={visitorId}
-                onReply={addReply}
-                onDelete={deleteIfOwner}
+                onReply={handleAddReply}
+                onDelete={handleDelete}
                 onEdit={editIfOwner}
+                showToast={showToast}
                 depth={0}
               />
             ))}
