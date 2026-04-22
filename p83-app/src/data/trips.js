@@ -93,8 +93,7 @@ export const TRIPS = [
     elevationDisplay: '3,976 m',
     routeNote: 'Overnight camp with Fuego views',
     bestSeason: 'November through April',
-    imageUrl:
-      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=500&fit=crop&q=80',
+    imageUrl: 'https://images.pexels.com/photos/20943303/pexels-photo-20943303.jpeg',
     teaser:
       'Camp above the treeline puts you eye-level with ash plumes from neighbouring Fuego while the Antigua valley glows far below.',
     description: [
@@ -130,8 +129,7 @@ export const TRIPS = [
     elevationDisplay: '3,914 m',
     routeNote: 'Crater rim circuit',
     bestSeason: 'June to September (drier highlands)',
-    imageUrl:
-      'https://images.unsplash.com/photo-1580654843061-8c90a9e4e1a0?w=800&h=500&fit=crop&q=80',
+    imageUrl: '/p83/images/quilotoa.png',
     teaser:
       'Mineral-blue water fills an emerald caldera; the rim trail traces pasture, wind, and occasional mist that erases the drop below.',
     description: [
@@ -167,8 +165,7 @@ export const TRIPS = [
     elevationDisplay: '3,532 m',
     routeNote: 'High alpine lake crossing',
     bestSeason: 'July to September (passes open)',
-    imageUrl:
-      'https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800&h=500&fit=crop&q=80',
+    imageUrl: '/p83/images/ala-kul.png',
     teaser:
       'Turquoise water sits in a cirque of broken rock; the pass approach is loose, steep, and worth every scraped knuckle.',
     description: [
@@ -241,8 +238,7 @@ export const TRIPS = [
     elevationDisplay: '1,250 m',
     routeNote: "Europe's longest gorge hike",
     bestSeason: 'April to June and September to October',
-    imageUrl:
-      'https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800&h=500&fit=crop&q=80',
+    imageUrl: '/p83/images/samaria-gorge.png',
     teaser:
       'Limestone walls narrow until sky is a ribbon; goats clatter on ledges while the riverbed guides your feet downhill.',
     description: [
@@ -359,7 +355,7 @@ export const HOME_CONTINENT_CARDS = [
     pillRegion: 'europe',
     title: 'Europe',
     count: 1,
-    imageUrl: 'https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=600&q=80',
+    imageUrl: '/p83/images/samaria-gorge.png',
   },
   {
     pillRegion: 'north-america',
