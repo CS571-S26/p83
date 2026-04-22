@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { TRIPS } from '../data/trips'
-import { getThread, getThreadStats } from '../lib/reviewsStorage'
+import { getThreadSync, getThreadStatsSync } from '../lib/reviewsStorage'
 import SectionReveal from '../components/SectionReveal'
 
 function formatLast(iso) {
@@ -14,7 +14,7 @@ function formatLast(iso) {
 }
 
 function getLatestPost(slug) {
-  const thread = getThread(slug)
+  const thread = getThreadSync(slug)
   if (thread.length === 0) return null
   const sorted = [...thread].sort((a, b) => b.at.localeCompare(a.at))
   return sorted[0]
@@ -68,7 +68,7 @@ export default function ForumsPage() {
   const rows = useMemo(() => {
     let data = TRIPS.map((trip) => ({
       trip,
-      ...getThreadStats(trip.slug),
+      ...getThreadStatsSync(trip.slug),
       latestPost: getLatestPost(trip.slug),
     }))
 

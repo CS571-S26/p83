@@ -92,7 +92,7 @@ export default function WishlistSidebar() {
                 >
                   <img
                     src={t.imageUrl}
-                    alt=""
+                    alt={t.name}
                     className="bb-wishlist-panel__thumb"
                     width={56}
                     height={56}

@@ -1,99 +1,141 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   deleteCommentCascade,
   editComment,
   getThread,
   restoreComments,
   saveThread,
+  subscribeToThread,
 } from '../lib/reviewsStorage'
 import { getOrCreateVisitorId } from '../lib/visitorId'
 
-function newId() {
-  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID()
-  return `r-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
-}
-
 export function useTripReviews(slug) {
-  const [flat, setFlat] = useState(() => getThread(slug))
-  const visitorId = useMemo(() => getOrCreateVisitorId(), [])
+  const [flat, setFlat] = useState([])
+  const [visitorId, setVisitorId] = useState(null)
+  const [loading, setLoading] = useState(true)
 
+  // Initialize visitor ID
   useEffect(() => {
-    setFlat(getThread(slug))
+    getOrCreateVisitorId().then(setVisitorId)
+  }, [])
+
+  // Load thread on mount/slug change
+  useEffect(() => {
+    let cancelled = false
+
+    async function load() {
+      setLoading(true)
+      const thread = await getThread(slug)
+      if (!cancelled) {
+        setFlat(thread)
+        setLoading(false)
+      }
+    }
+
+    load()
+
+    return () => {
+      cancelled = true
+    }
+  }, [slug])
+
+  // Subscribe to realtime updates
+  useEffect(() => {
+    const unsubscribe = subscribeToThread(slug, (updated) => {
+      setFlat(updated)
+    })
+
+    return unsubscribe
   }, [slug])
 
   const persist = useCallback(
-    (next) => {
-      saveThread(slug, next)
+    async (next) => {
+      await saveThread(slug, next)
       setFlat(next)
     },
     [slug],
   )
 
   const addTopLevel = useCallback(
-    ({ visitorName, rating, season, body }) => {
-      const authorId = getOrCreateVisitorId()
+    async ({ visitorName, rating, season, body }) => {
+      if (!visitorId) return
+
       const item = {
-        id: newId(),
+        id: crypto.randomUUID(),
         slug,
         parentId: null,
-        authorId,
+        authorId: visitorId,
         visitorName: visitorName.trim(),
         rating,
         season,
         body: body.trim(),
         at: new Date().toISOString(),
       }
-      persist([item, ...getThread(slug)])
+
+      const current = await getThread(slug)
+      await persist([item, ...current])
     },
-    [slug, persist],
+    [slug, persist, visitorId],
   )
 
   const addReply = useCallback(
-    ({ parentId, visitorName, body }) => {
-      const authorId = getOrCreateVisitorId()
+    async ({ parentId, visitorName, body }) => {
+      if (!visitorId) return
+
       const item = {
-        id: newId(),
+        id: crypto.randomUUID(),
         slug,
         parentId,
-        authorId,
+        authorId: visitorId,
         visitorName: visitorName.trim(),
         rating: null,
         season: '',
         body: body.trim(),
         at: new Date().toISOString(),
       }
-      persist([...getThread(slug), item])
+
+      const current = await getThread(slug)
+      await persist([...current, item])
     },
-    [slug, persist],
+    [slug, persist, visitorId],
   )
 
   const deleteIfOwner = useCallback(
-    (id) => {
-      const thread = getThread(slug)
+    async (id) => {
+      if (!visitorId) return null
+
+      const thread = await getThread(slug)
       const target = thread.find((x) => x.id === id)
       if (!target || target.authorId !== visitorId) return null
-      const deleted = deleteCommentCascade(slug, id)
-      setFlat(getThread(slug))
+
+      const deleted = await deleteCommentCascade(slug, id)
+      const updated = await getThread(slug)
+      setFlat(updated)
       return deleted
     },
     [slug, visitorId],
   )
 
   const undoDelete = useCallback(
-    (deletedComments) => {
-      restoreComments(slug, deletedComments)
-      setFlat(getThread(slug))
+    async (deletedComments) => {
+      await restoreComments(slug, deletedComments)
+      const updated = await getThread(slug)
+      setFlat(updated)
     },
     [slug],
   )
 
   const editIfOwner = useCallback(
-    (id, newBody) => {
-      const thread = getThread(slug)
+    async (id, newBody) => {
+      if (!visitorId) return
+
+      const thread = await getThread(slug)
       const target = thread.find((x) => x.id === id)
       if (!target || target.authorId !== visitorId) return
-      editComment(slug, id, newBody)
-      setFlat(getThread(slug))
+
+      await editComment(slug, id, newBody)
+      const updated = await getThread(slug)
+      setFlat(updated)
     },
     [slug, visitorId],
   )
@@ -101,6 +143,7 @@ export function useTripReviews(slug) {
   return {
     flat,
     visitorId,
+    loading,
     addTopLevel,
     addReply,
     deleteIfOwner,

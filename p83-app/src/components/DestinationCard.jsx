@@ -27,7 +27,7 @@ function DestinationCard({ trip, index = 0 }) {
       <Link to={`/trips/${trip.slug}`} className="bb-dest-card__media">
         <img
           src={trip.imageUrl}
-          alt=""
+          alt={trip.name}
           className="bb-dest-card__img"
           loading="lazy"
           decoding="async"

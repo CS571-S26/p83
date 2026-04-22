@@ -22,7 +22,7 @@ export default function TripDetailPage() {
   return (
     <article className="bb-detail">
       <header className="bb-detail-hero">
-        <img src={trip.imageUrl} alt="" className="bb-detail-hero__img" />
+        <img src={trip.imageUrl} alt={`${trip.name} hero image`} className="bb-detail-hero__img" />
         <div className="bb-detail-hero__shade" />
         <div className="bb-detail-hero__titlewrap bb-shell">
           <p className="bb-detail-hero__eyebrow">{trip.regionLabel}</p>

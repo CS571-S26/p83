@@ -77,7 +77,7 @@ export default function HeroSlideshow() {
           >
             <img
               src={slide.src}
-              alt=""
+              alt={slide.label}
               className="bb-hero-slideshow__probe"
               decoding="async"
               onError={() =>

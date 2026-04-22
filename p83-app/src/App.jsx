@@ -9,11 +9,14 @@ import TripsPage from './pages/TripsPage'
 import TripDetailPage from './pages/TripDetailPage'
 import ForumsPage from './pages/ForumsPage'
 import { applySeedData } from './data/seedData'
+// import { migrateLocalDataToSupabase } from './lib/migrateToSupabase'
 import './App.css'
 
 function App() {
   useEffect(() => {
     applySeedData()
+    // Supabase migration - uncomment when Supabase is configured
+    // migrateLocalDataToSupabase()
   }, [])
 
   return (
