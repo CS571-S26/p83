@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter, Routes, Route } from 'react-router-dom'
 import { WishlistProvider } from './context/WishlistContext'
 import AppNavbar from './components/AppNavbar'
 import WishlistSidebar from './components/WishlistSidebar'
@@ -17,7 +17,7 @@ function App() {
   }, [])
 
   return (
-    <BrowserRouter basename="/p83">
+    <HashRouter>
       <WishlistProvider>
         <div className="bb-app">
           <AppNavbar />
@@ -33,7 +33,7 @@ function App() {
           <WishlistSidebar />
         </div>
       </WishlistProvider>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
