@@ -343,7 +343,8 @@ export const HOME_CONTINENT_CARDS = [
     pillRegion: 'central-america',
     title: 'Central America',
     count: 1,
-    imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
+    imageUrl:
+      'https://images.pexels.com/photos/20943303/pexels-photo-20943303.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
   },
   {
     pillRegion: 'south-america',
