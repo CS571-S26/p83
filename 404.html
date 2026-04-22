@@ -2,6 +2,19 @@
 <html lang="en" data-bs-theme="light">
   <head>
     <meta charset="UTF-8" />
+    <!-- GitHub Pages: path URLs like /p83/forums are not real files. Send them to hash routes so the SPA loads with HTTP 200. -->
+    <script>
+      (function () {
+        var path = window.location.pathname.replace(/\/index\.html$/i, '')
+        var base = '/p83'
+        if (window.location.hash.length > 1) return
+        if (path === base || path === base + '/') return
+        if (!path.startsWith(base + '/')) return
+        var rest = path.slice((base + '/').length)
+        if (!rest) return
+        window.location.replace(base + '/#/' + rest + window.location.search + window.location.hash)
+      })()
+    </script>
     <link rel="icon" type="image/svg+xml" href="/p83/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -11,7 +24,7 @@
       rel="stylesheet"
     />
     <title>Backpacking Basecamp</title>
-    <script type="module" crossorigin src="/p83/assets/index-2Z9HFeD7.js"></script>
+    <script type="module" crossorigin src="/p83/assets/index-D8ejOU94.js"></script>
     <link rel="stylesheet" crossorigin href="/p83/assets/index-Dtblergl.css">
   </head>
   <body>
