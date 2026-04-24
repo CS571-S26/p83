@@ -3,7 +3,7 @@ import TripReviewForm from './TripReviewForm'
 import ConfirmModal from './ConfirmModal'
 import { addVote, removeVote, hasVoted, getVoteCount } from '../lib/votesStorage'
 
-function buildNested(flat) {
+function buildNested(flat, sortBy = 'newest') {
   const byParent = new Map()
   for (const item of flat) {
     const pid = item.parentId === null ? 'root' : item.parentId
@@ -11,7 +11,15 @@ function buildNested(flat) {
     byParent.get(pid).push(item)
   }
   const roots = byParent.get('root') || []
-  roots.sort((a, b) => b.at.localeCompare(a.at))
+
+  // Sort based on selected option
+  if (sortBy === 'newest') {
+    roots.sort((a, b) => b.at.localeCompare(a.at))
+  } else if (sortBy === 'highest') {
+    roots.sort((a, b) => (b.rating || 0) - (a.rating || 0))
+  } else if (sortBy === 'helpful') {
+    roots.sort((a, b) => getVoteCount(b.id) - getVoteCount(a.id))
+  }
 
   function walk(node) {
     const kids = (byParent.get(node.id) || []).slice().sort((a, b) => a.at.localeCompare(b.at))
@@ -263,7 +271,8 @@ export default function TripReviewThread({
   showToast,
   flat,
 }) {
-  const tree = useMemo(() => buildNested(flat), [flat])
+  const [reviewSort, setReviewSort] = useState('newest')
+  const tree = useMemo(() => buildNested(flat, reviewSort), [flat, reviewSort])
 
   const handleAddReview = (payload) => {
     addTopLevel(payload)
@@ -306,7 +315,25 @@ export default function TripReviewThread({
 
       {tree.length > 0 ? (
         <div className="bb-reviews bb-reviews--thread">
-          <h3 className="bb-reviews__title">Discussion</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <h3 className="bb-reviews__title" style={{ margin: 0 }}>Discussion</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <label htmlFor="review-sort" style={{ fontSize: '0.875rem', color: 'var(--color-ink-muted)' }}>
+                Sort by:
+              </label>
+              <select
+                id="review-sort"
+                value={reviewSort}
+                onChange={(e) => setReviewSort(e.target.value)}
+                className="bb-input"
+                style={{ width: 'auto', padding: '0.5rem 0.75rem', fontSize: '0.875rem' }}
+              >
+                <option value="newest">Newest First</option>
+                <option value="highest">Highest Rated</option>
+                <option value="helpful">Most Helpful</option>
+              </select>
+            </div>
+          </div>
           <ul className="bb-thread__list">
             {tree.map((w) => (
               <ThreadPost

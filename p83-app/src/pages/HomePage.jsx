@@ -32,15 +32,18 @@ export default function HomePage() {
                 key={c.pillRegion}
                 to={`/trips?pill=${encodeURIComponent(c.pillRegion)}`}
                 className="bb-continent-card"
+                aria-label={`Explore ${c.title} - ${c.count} destination${c.count === 1 ? '' : 's'}`}
               >
                 <div
                   className="bb-continent-card__bg"
                   style={{ backgroundImage: `url("${c.imageUrl}")` }}
+                  role="img"
+                  aria-label={`${c.title} landscape`}
                 />
                 <div className="bb-continent-card__shade" aria-hidden="true" />
                 <div className="bb-continent-card__content">
-                  <span className="bb-continent-card__title">{c.title}</span>
-                  <span className="bb-continent-card__count">
+                  <span className="bb-continent-card__title" aria-hidden="true">{c.title}</span>
+                  <span className="bb-continent-card__count" aria-hidden="true">
                     {c.count} destination{c.count === 1 ? '' : 's'}
                   </span>
                 </div>

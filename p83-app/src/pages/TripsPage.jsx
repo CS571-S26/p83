@@ -10,6 +10,8 @@ import {
 } from '../data/trips'
 import DestinationCard from '../components/DestinationCard'
 import SectionReveal from '../components/SectionReveal'
+import SortDropdown from '../components/SortDropdown'
+import FilterPills from '../components/FilterPills'
 
 function continentDisplayLabel(pill, continent) {
   if (pill) {
@@ -44,6 +46,7 @@ export default function TripsPage() {
   const [tripType, setTripType] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [openMenu, setOpenMenu] = useState(null)
+  const [sortBy, setSortBy] = useState('featured')
 
   const wrapRef = useRef(null)
 
@@ -76,8 +79,19 @@ export default function TripsPage() {
       )
     }
 
+    // Apply sorting
+    if (sortBy === 'name') {
+      results = [...results].sort((a, b) => a.name.localeCompare(b.name))
+    } else if (sortBy === 'difficulty') {
+      const difficultyOrder = { Easy: 1, Moderate: 2, Challenging: 3 }
+      results = [...results].sort((a, b) => difficultyOrder[b.difficulty] - difficultyOrder[a.difficulty])
+    } else if (sortBy === 'elevation') {
+      results = [...results].sort((a, b) => b.elevationM - a.elevationM)
+    }
+    // 'featured' keeps the original order
+
     return results
-  }, [continent, difficulty, tripType, pill, searchTerm])
+  }, [continent, difficulty, tripType, pill, searchTerm, sortBy])
 
   const continentActive = pill ? 'all' : continent
   const filterKey = `${pill}|${continent}|${difficulty}|${tripType}|${searchTerm}`
@@ -99,6 +113,64 @@ export default function TripsPage() {
     setSearchTerm('')
     clearPill()
     setOpenMenu(null)
+  }
+
+  const activeFilters = useMemo(() => {
+    const filters = []
+    if (pill) {
+      const card = HOME_CONTINENT_CARDS.find((c) => c.pillRegion === pill)
+      filters.push({
+        id: 'pill',
+        category: 'Region',
+        label: card ? card.title : pill,
+      })
+    }
+    if (continent !== 'all' && !pill) {
+      const filter = CONTINENT_FILTERS.find((f) => f.id === continent)
+      filters.push({
+        id: 'continent',
+        category: 'Continent',
+        label: filter?.label || continent,
+      })
+    }
+    if (difficulty !== 'all') {
+      const filter = DIFFICULTY_FILTERS.find((f) => f.id === difficulty)
+      filters.push({
+        id: 'difficulty',
+        category: 'Difficulty',
+        label: filter?.label || difficulty,
+      })
+    }
+    if (tripType !== 'all') {
+      const filter = TYPE_FILTERS.find((f) => f.id === tripType)
+      filters.push({
+        id: 'tripType',
+        category: 'Type',
+        label: filter?.label || tripType,
+      })
+    }
+    if (searchTerm) {
+      filters.push({
+        id: 'search',
+        category: 'Search',
+        label: `"${searchTerm}"`,
+      })
+    }
+    return filters
+  }, [pill, continent, difficulty, tripType, searchTerm])
+
+  const removeFilter = (id, category) => {
+    if (id === 'pill') {
+      clearPill()
+    } else if (id === 'continent') {
+      setContinent('all')
+    } else if (id === 'difficulty') {
+      setDifficulty('all')
+    } else if (id === 'tripType') {
+      setTripType('all')
+    } else if (id === 'search') {
+      setSearchTerm('')
+    }
   }
 
   useEffect(() => {
@@ -161,6 +233,8 @@ export default function TripsPage() {
             </button>
           )}
         </div>
+
+        <FilterPills activeFilters={activeFilters} onRemove={removeFilter} />
 
         <div className="bb-trip-filters-wrap" ref={wrapRef}>
           <div className="bb-trip-filters">
@@ -332,6 +406,10 @@ export default function TripsPage() {
               </div>
             </div>
           </div>
+        </div>
+
+        <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+          <SortDropdown value={sortBy} onChange={setSortBy} />
         </div>
 
         <div className="bb-dest-grid" key={filterKey}>

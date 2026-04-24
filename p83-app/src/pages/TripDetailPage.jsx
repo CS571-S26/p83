@@ -1,10 +1,15 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { getTripBySlug } from '../data/trips'
 import TripReviewThread from '../components/TripReviewThread'
 import DetailStats from '../components/DetailStats'
 import SectionReveal from '../components/SectionReveal'
 import ToastContainer from '../components/ToastContainer'
+import BackToTop from '../components/BackToTop'
+import ShareButton from '../components/ShareButton'
+import ImageLightbox from '../components/ImageLightbox'
+import RelatedTrips from '../components/RelatedTrips'
+import DifficultyBar from '../components/DifficultyBar'
 import { useTripReviews } from '../hooks/useTripReviews'
 import { useToast } from '../hooks/useToast'
 
@@ -14,6 +19,7 @@ export default function TripDetailPage() {
   const { flat, visitorId, addTopLevel, addReply, deleteIfOwner, editIfOwner, undoDelete } =
     useTripReviews(slug || '')
   const { toasts, showToast, dismissToast } = useToast()
+  const [lightboxOpen, setLightboxOpen] = useState(false)
 
   if (!trip) {
     return <Navigate to="/trips" replace />
@@ -21,7 +27,7 @@ export default function TripDetailPage() {
 
   return (
     <article className="bb-detail">
-      <header className="bb-detail-hero">
+      <header className="bb-detail-hero" onClick={() => setLightboxOpen(true)} style={{ cursor: 'pointer' }} title="Click to view full image">
         <img src={trip.imageUrl} alt={`${trip.name} hero image`} className="bb-detail-hero__img" />
         <div className="bb-detail-hero__shade" />
         <div className="bb-detail-hero__titlewrap bb-shell">
@@ -38,6 +44,11 @@ export default function TripDetailPage() {
           <span aria-hidden="true"> / </span>
           <span>{trip.name}</span>
         </nav>
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+          <DifficultyBar difficulty={trip.difficulty} />
+          <ShareButton url={window.location.href} title={trip.name} />
+        </div>
 
         <DetailStats trip={trip} />
 
@@ -79,12 +90,26 @@ export default function TripDetailPage() {
           flat={flat}
         />
 
+        <hr className="bb-rule" />
+
+        <RelatedTrips currentTrip={trip} />
+
         <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
         <p className="bb-detail-back">
           <Link to="/trips">← All destinations</Link>
         </p>
       </div>
+
+      <BackToTop />
+
+      {lightboxOpen && (
+        <ImageLightbox
+          imageUrl={trip.imageUrl}
+          alt={`${trip.name} full view`}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
     </article>
   )
 }
