@@ -43,6 +43,7 @@ export default function HeroSlideshow() {
   const [active, setActive] = useState(0)
   const [paused, setPaused] = useState(false)
   const [bgFailed, setBgFailed] = useState({})
+  const [ready, setReady] = useState(false)
 
   const go = useCallback((dir) => {
     setActive((i) => {
@@ -54,11 +55,17 @@ export default function HeroSlideshow() {
     })
   }, [])
 
+  // Wait for initial animations to complete before auto-advancing
   useEffect(() => {
-    if (paused) return undefined
+    const timer = setTimeout(() => setReady(true), 2000)
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    if (paused || !ready) return undefined
     const t = setInterval(() => go('next'), SLIDE_INTERVAL_MS)
     return () => clearInterval(t)
-  }, [paused, go])
+  }, [paused, ready, go])
 
   return (
     <section
