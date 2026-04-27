@@ -71,8 +71,6 @@ export default function HeroSlideshow() {
     <section
       className="bb-hero-slideshow"
       aria-label="Featured landscapes"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
     >
       <div className="bb-hero-slideshow__slides">
         {SLIDES.map((slide, i) => (
@@ -111,6 +109,8 @@ export default function HeroSlideshow() {
         type="button"
         className="bb-hero-slideshow__arrow bb-hero-slideshow__arrow--prev"
         onClick={() => go('prev')}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
         aria-label="Previous slide"
       >
         ‹
@@ -119,6 +119,8 @@ export default function HeroSlideshow() {
         type="button"
         className="bb-hero-slideshow__arrow bb-hero-slideshow__arrow--next"
         onClick={() => go('next')}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
         aria-label="Next slide"
       >
         ›
@@ -136,7 +138,13 @@ export default function HeroSlideshow() {
         </Link>
       </div>
 
-      <div className="bb-hero-slideshow__dots" role="tablist" aria-label="Slide indicators">
+      <div
+        className="bb-hero-slideshow__dots"
+        role="tablist"
+        aria-label="Slide indicators"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
         {SLIDES.map((slide, i) => (
           <button
             key={slide.id}
